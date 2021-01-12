@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Chat App</title>
+  </head>
+  <body>
+
+    <div class="container">
+        <div class="row">
+            <div class="card p-5 mt-5">
+                <h2 class="text-muted text-center">Chat App</h2>
+                <div class="card-head">
+                    <div class="row g-0">
+                        <div class="col-sm-6 col-md-8">
+                            <h5 class="text-muted"><span id="totalMessage"></span> Message</h5>
+                        </div>
+                        <div class="col-sm-6 col-md-4 text-end">
+                            <h5 class="text-muted"><span id="totalUserOnline"></span> Orang Online</h5>
+                        </div>
+                      </div>
+                </div>
+                <div class="list-group" style="overflow-y: scroll; max-height: 500px; padding:20px;" id="messageList">
+                    <a href="#" class="list-group-item list-group-item-action">message</a>
+                </div>
+    
+                                
+                    <div class="input-group mb-3 mt-3">
+                        <input type="text" id="textMessage" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-primary" type="button" id="message">Kirim Pesan</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io()
+
+        socket.emit('join')
+        socket.on('countUserOnline', (countUserOnline) => {
+            let total = document.getElementById('totalUserOnline')
+            total.textContent = countUserOnline;
+        })
+
+        socket.on('message', (param) => {
+            let message = document.querySelectorAll("#messageList");
+            message[0].append('<a href="#" class="list-group-item list-group-item-action">${param.text}</a>')
+        })
+        
+        socket.on('countMessage', (countMessage) => {
+            let total = document.getElementById('totalMessage')
+            total.textContent = countMessage;
+        })
+        
+        document.getElementById("message").addEventListener("click", function(){
+            socket.emit('message', {
+                text: document.getElementById("textMessage").value 
+            })
+        });
+
+    </script>
+  </body>
+</html>
