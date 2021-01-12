@@ -5,7 +5,7 @@ const io = require('socket.io')(server, {})
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
-let countUserOnline =2
+let countUserOnline =1
 let countMessage = 0
 io.on('connection', socket => {
     socket.on('join', param => {
